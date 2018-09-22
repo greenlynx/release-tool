@@ -44,12 +44,6 @@ namespace ReleaseTool
                 var settings = serviceProvider.GetRequiredService<IOptions<Settings>>().Value;
 
                 new ReleasePreparer(x => Log(x)).PrepareRelease(settings);
-
-#if DEBUG
-                Console.WriteLine();
-                Console.WriteLine("Press ENTER to exit");
-                Console.ReadLine();
-#endif
             }
             catch (ErrorException ex)
             {
@@ -61,6 +55,12 @@ namespace ReleaseTool
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex);
             }
+
+#if DEBUG
+            Console.WriteLine();
+            Console.WriteLine("Press ENTER to exit");
+            Console.ReadLine();
+#endif
         }
 
         private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)

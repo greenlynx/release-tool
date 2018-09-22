@@ -1,5 +1,9 @@
-# Release Tool 2.0.0
+# Release Tool 2.1.0
 
+
+## 2.1.0
+
+* **New feature**: Added Cake helper
 
 ## 2.0.0
 

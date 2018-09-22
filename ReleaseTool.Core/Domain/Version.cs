@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace ReleaseTool.Domain
 {
@@ -25,6 +26,9 @@ namespace ReleaseTool.Domain
         public ProductVersion IncrementMajor() => new ProductVersion(Major + 1, 0, 0);
         public ProductVersion IncrementMinor() => new ProductVersion(Major, Minor + 1, 0);
         public ProductVersion IncrementPatch() => new ProductVersion(Major, Minor, Patch + 1);
+
+        [JsonIgnore]
+        public ProductVersion RoundToMajor => new ProductVersion(Major, 0, 0);
 
         public int CompareTo(ProductVersion other) => _systemVersion.CompareTo(other?._systemVersion);
 

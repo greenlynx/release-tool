@@ -8,6 +8,7 @@ using Newtonsoft.Json.Serialization;
 using ReleaseTool.Domain;
 using System;
 using System.Xml.Linq;
+using System.Text.RegularExpressions;
 
 namespace ReleaseTool
 {
@@ -89,6 +90,7 @@ namespace ReleaseTool
             if (settings.PatchAssemblyVersions)
             {
                 PatchAllDotNetProjectFiles(settings, releaseHistory.CurrentVersion);
+                PatchAllAssemblyInfoFiles(settings, releaseHistory.CurrentVersion);
             }
 
             return releaseHistory;
@@ -281,14 +283,58 @@ namespace ReleaseTool
                 Log($" Patching {projectFile} to version {version}");
 
                 var xdoc = XDocument.Load(projectFile);
-                var versionElements = xdoc.Descendants("Version");
-                foreach (var versionElement in versionElements)
+                var propertyGroupElement = xdoc.Element("Project").Elements("PropertyGroup").First(x => !x.HasAttributes);
+                if (propertyGroupElement == null)
                 {
-                    versionElement.SetValue(version);
+                    propertyGroupElement = new XElement("PropertyGroup");
+                    xdoc.Add(propertyGroupElement);
                 }
+
+                void PatchOrAddElement(string name, string value)
+                {
+                    var element = propertyGroupElement.Element(name);
+                    if (element == null)
+                    {
+                        element = new XElement(name);
+                        propertyGroupElement.Add(element);
+                    }
+
+                    element.Value = value;
+                }
+
+                PatchOrAddElement("Version", version.ToString());
+                PatchOrAddElement("AssemblyVersion", $"{version.RoundToMajor}");
+                PatchOrAddElement("FileVersion", $"{version}.0");
+                PatchOrAddElement("InformationalVersion", version.ToString());
+
                 xdoc.Save(projectFile);
             }
         }
 
+        private void PatchAllAssemblyInfoFiles(Settings settings, ProductVersion version)
+        {
+            Log("Patching assembly versions in AssemblyInfo.cs files...");
+
+            var files = Directory.EnumerateFiles(".", "AssemblyInfo.cs", SearchOption.AllDirectories);
+            foreach (var file in files)
+            {
+                Log($" Patching {file} to version {version}");
+
+                var lines = File.ReadAllLines(file);
+                var newLines = new List<string>();
+                foreach (var line in lines)
+                {
+                    if (line.TrimStart().StartsWith("//")) continue;
+
+                    var newLine = Regex.Replace(line, @"\[assembly\s*:\s*AssemblyVersion\s*\(\s*""[\d\.]+""\s*\)\s*\]", $"[assembly: AssemblyVersion(\"{version.RoundToMajor}.0\")]");
+                    newLine = Regex.Replace(newLine, @"\[assembly\s*:\s*AssemblyFileVersion\s*\(\s*""[\d\.]+""\s*\)\s*\]", $"[assembly: AssemblyFileVersion(\"{version}.0\")]");
+                    newLine = Regex.Replace(newLine, @"\[assembly\s*:\s*AssemblyInformationalVersion\s*\(\s*""[\d\.]+""\s*\)\s*\]", $"[assembly: AssemblyInformationalVersion(\"{version}\")]");
+
+                    newLines.Add(newLine);
+                }
+
+                File.WriteAllLines(file, newLines);
+            }
+        }
     }
 }
