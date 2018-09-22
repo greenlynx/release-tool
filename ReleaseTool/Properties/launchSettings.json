@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ReleaseTool": {
+      "commandName": "Project",
+      "commandLineArgs": "--ProductName=\"Release Tool\""
+    }
+  }
+}

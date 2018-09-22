@@ -1,0 +1,12 @@
+﻿# Every time you make a change, you should add a line to this file, along with a prefix to tag what sort of change it was (BUGFIX/FEATURE/BREAKING).
+# Each time a release is created, the changes will be moved from this file into the changelog. The type of changes included in a release determine what happens to its version number:
+# - If any BREAKING changes are included, a new major version will be released
+# - If no BREAKING changes are included, but there are one or more FEATUREs, a new minor version will be released
+# - Otherwise only the patch version of the release will be incremented
+#
+# Examples:
+#
+# BUGFIX: Fixed widget rendering [JIRA-123]
+# FEATURE: Added gadget info screen [JIRA-456]
+# BREAKING: Change API schema [JIRA-789]
+

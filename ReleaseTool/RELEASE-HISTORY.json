@@ -1,0 +1,31 @@
+{
+  "productName": "Release Tool",
+  "releases": [
+    {
+      "version": {
+        "major": 1,
+        "minor": 0,
+        "patch": 0
+      },
+      "changes": [
+        {
+          "type": "NewFeature",
+          "description": "Generate release history file as JSON"
+        },
+        {
+          "type": "NewFeature",
+          "description": "Convert JSON history into changelog in Markdown format"
+        },
+        {
+          "type": "NewFeature",
+          "description": "Convert Markdown changelog into HTML"
+        }
+      ]
+    }
+  ],
+  "currentVersion": {
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  }
+}
