@@ -1,23 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <StartupObject>ReleaseTool.Program</StartupObject>
+    <Version>1.1.0</Version>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="CommonMark.NET" Version="0.15.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="2.1.1" />
@@ -28,5 +26,4 @@
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
   </ItemGroup>
-
 </Project>

@@ -4,6 +4,19 @@
     {
       "version": {
         "major": 1,
+        "minor": 1,
+        "patch": 0
+      },
+      "changes": [
+        {
+          "type": "NewFeature",
+          "description": "patch .csproj versions"
+        }
+      ]
+    },
+    {
+      "version": {
+        "major": 1,
         "minor": 0,
         "patch": 0
       },
@@ -25,7 +38,7 @@
   ],
   "currentVersion": {
     "major": 1,
-    "minor": 0,
+    "minor": 1,
     "patch": 0
   }
 }

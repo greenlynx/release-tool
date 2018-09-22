@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using System.Reflection;
 using ReleaseTool.Domain;
 using System;
+using System.Xml.Linq;
 
 namespace ReleaseTool
 {
@@ -105,6 +106,11 @@ namespace ReleaseTool
                 if (!string.IsNullOrWhiteSpace(settings.HtmlChangeLogFileName))
                 {
                     ConvertChangelogToHtml(settings, releaseHistory);
+                }
+
+                if (settings.PatchAssemblyVersions)
+                {
+                    PatchAllDotNetProjectFiles(settings, releaseHistory.CurrentVersion);
                 }
             }
             catch (ErrorException ex)
@@ -295,6 +301,25 @@ namespace ReleaseTool
 </html>";
 
             File.WriteAllText(settings.HtmlChangeLogFileName, html);
+        }
+
+        private static void PatchAllDotNetProjectFiles(Settings settings, ProductVersion version)
+        {
+            Log("Patching assembly versions in .csproj files...");
+
+            var projectFiles = Directory.EnumerateFiles(".", "*.csproj", SearchOption.AllDirectories);
+            foreach (var projectFile in projectFiles)
+            {
+                Log($" Patching {projectFile} to version {version}");
+
+                var xdoc = XDocument.Load(projectFile);
+                var versionElements = xdoc.Descendants("Version");
+                foreach (var versionElement in versionElements)
+                {
+                    versionElement.SetValue(version);
+                }
+                xdoc.Save(projectFile);
+            }            
         }
     }
 }

@@ -1,5 +1,9 @@
-# Release Tool 1.0.0
+# Release Tool 1.1.0
 
+
+## 1.1.0
+
+* **New feature**: patch .csproj versions
 
 ## 1.0.0
 

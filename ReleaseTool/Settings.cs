@@ -8,5 +8,7 @@
         public string HtmlChangeLogFileName { get; set; } = null;
 
         public string ProductName { get; set; } = null;
+
+        public bool PatchAssemblyVersions = true;
     }
 }
