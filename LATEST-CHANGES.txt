@@ -12,3 +12,4 @@
 # FEATURE: Added gadget info screen [JIRA-456]
 # BREAKING: Change API schema [JIRA-789]
 
+FEATURE: Added Cake helper
