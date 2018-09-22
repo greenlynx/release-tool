@@ -113,7 +113,8 @@ namespace ReleaseTool
 # Each time a release is created, the changes will be moved from this file into the changelog. The type of changes included in a release determine what happens to its version number:
 # - If any BREAKING changes are included, a new major version will be released
 # - If no BREAKING changes are included, but there are one or more FEATUREs, a new minor version will be released
-# - Otherwise only the patch version of the release will be incremented
+# - If only FIXes have been made, only the patch version of the release will be incremented
+# - If no changes are listed here, a release cannot be made
 #
 # Do not edit any other part of this file - it will be generated next release and your changes will be lost!
 #
