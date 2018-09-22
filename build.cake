@@ -1,5 +1,6 @@
-//#addin nuget:?package=GreenLynx.ReleaseTool.Cake&version=2.1.2
+#addin nuget:?package=GreenLynx.ReleaseTool.Cake
 #addin nuget:?package=Cake.Git
+#addin "Cake.FileHelpers"
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
@@ -31,13 +32,16 @@ Task("Prepare-Release")
 	.IsDependentOn("Check-Git-Prerequisites")
     .Does(() =>
 {
-    var releaseHistory = PrepareRelease(new PrepareReleaseSettings { ProductName = "Release Tool" });
-	var version = releaseHistory.CurrentVersion;
+    PrepareRelease(new PrepareReleaseSettings { ProductName = "Release Tool" });
 
-	GitTag(gitPath, version);
-	GitAddAll(gitPath);
-	GitCommit(gitPath, gitName, gitEmail, $"Prepare {version} release")
-	GitPush(gitPath);
+	if (GitHasUncommitedChanges(gitPath))
+	{
+		var version = FileReadText("./VERSION");
+		GitTag(gitPath, version);
+		GitAddAll(gitPath);
+		GitCommit(gitPath, gitName, gitEmail, $"Prepare {version} release");
+		GitPush(gitPath);
+	}
 });
 
 Task("Default")

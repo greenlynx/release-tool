@@ -14,6 +14,7 @@
     <Description>Core functionality for Release Tool</Description>
     <Copyright>Copyright ©2018 Green Lynx Limited</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageTags>Cake</PackageTags>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CommonMark.NET" Version="0.15.1" />

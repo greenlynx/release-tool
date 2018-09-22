@@ -1,17 +1,18 @@
 ﻿using Cake.Core;
 using Cake.Core.Annotations;
 using Cake.Core.Diagnostics;
+using ReleaseTool.Domain;
 
 namespace ReleaseTool.Cake
 {
     public static class CakeExtensions
     {
         [CakeMethodAlias]
-        public static void PrepareRelease(this ICakeContext context, PrepareReleaseSettings settings = null)
+        public static ReleaseHistory PrepareRelease(this ICakeContext context, PrepareReleaseSettings settings = null)
         {
             var builtSettings = BuildSettings(settings);
 
-            new ReleasePreparer(message => context.Log.Write(Verbosity.Normal, LogLevel.Information, message)).PrepareRelease(builtSettings);
+            return new ReleasePreparer(message => context.Log.Write(Verbosity.Normal, LogLevel.Information, message)).PrepareRelease(builtSettings);
         }
 
         private static Settings BuildSettings(PrepareReleaseSettings settings)
