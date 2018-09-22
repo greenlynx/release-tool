@@ -9,6 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReleaseTool.Cake", "Release
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReleaseTool.Core", "ReleaseTool.Core\ReleaseTool.Core.csproj", "{C455BB0E-BE95-4874-B662-2529269B8D17}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BF8821DA-68A8-4DFC-A73E-B7C0FA314CB6}"
+	ProjectSection(SolutionItems) = preProject
+		build.cake = build.cake
+		LATEST-CHANGES.txt = LATEST-CHANGES.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

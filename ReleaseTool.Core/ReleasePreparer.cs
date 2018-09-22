@@ -36,6 +36,7 @@ namespace ReleaseTool
             Log($" HtmlChangeLogFileName = {settings.HtmlChangeLogFileName}");
             Log($" ProductName = {settings.ProductName}");
             Log($" PatchAssemblyVersions = {settings.PatchAssemblyVersions}");
+            Log($" DoNotPrompt = {settings.DoNotPrompt}");
             Log(string.Empty);
 
             var releaseHistory = ReadReleaseHistory(settings);
@@ -65,8 +66,11 @@ namespace ReleaseTool
                 Log($"No changes recorded since last release - the version will remain at {releaseHistory.CurrentVersion}. The output files will be regenerated but no new release can be made without recording at least one change.");
             }
 
-            Console.WriteLine("Press ENTER to go ahead with the release, or CTRL-C to cancel...");
-            Console.ReadLine();
+            if (!settings.DoNotPrompt)
+            {
+                Console.WriteLine("Press ENTER to go ahead with the release, or CTRL-C to cancel...");
+                Console.ReadLine();
+            }
 
             WriteReleaseHistory(settings, releaseHistory);
 

@@ -1,5 +1,9 @@
-# Release Tool 2.1.1
+# Release Tool 2.1.2
 
+
+## 2.1.2
+
+* **Fix**: Package core library for NuGet
 
 ## 2.1.1
 

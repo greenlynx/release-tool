@@ -2,15 +2,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>2.1.1</Version>
+    <Version>2.1.2</Version>
     <AssemblyVersion>2.0.0</AssemblyVersion>
-    <FileVersion>2.1.1.0</FileVersion>
-    <InformationalVersion>2.1.1</InformationalVersion>
+    <FileVersion>2.1.2.0</FileVersion>
+    <InformationalVersion>2.1.2</InformationalVersion>
+    <PackageId>GreenLynx.ReleaseTool.Cake</PackageId>
+    <Authors>Dan Haughey</Authors>
+    <Company>Green Lynx Limited</Company>
+    <Product>Release Tool</Product>
+    <RepositoryUrl>https://github.com/greenlynx/release-tool</RepositoryUrl>
+    <Description>Cake addins for Release Tool</Description>
+    <Copyright>Copyright ©2018 Green Lynx Limited</Copyright>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Cake.Core" Version="0.30.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ReleaseTool.Core\ReleaseTool.Core.csproj" />
+    <ProjectReference Include="..\ReleaseTool.Core\ReleaseTool.Core.csproj">
+      <Private>true</Private>
+    </ProjectReference>
   </ItemGroup>
 </Project>

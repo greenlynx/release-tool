@@ -5,6 +5,19 @@
       "version": {
         "major": 2,
         "minor": 1,
+        "patch": 2
+      },
+      "changes": [
+        {
+          "type": "Fix",
+          "description": "Package core library for NuGet"
+        }
+      ]
+    },
+    {
+      "version": {
+        "major": 2,
+        "minor": 1,
         "patch": 1
       },
       "changes": [
@@ -104,6 +117,6 @@
   "currentVersion": {
     "major": 2,
     "minor": 1,
-    "patch": 1
+    "patch": 2
   }
 }

@@ -11,5 +11,6 @@
         public string ProductName { get; set; } = null;
 
         public bool PatchAssemblyVersions { get; set; } = true;
+        public bool DoNotPrompt { get; set; } = false;
     }
 }
