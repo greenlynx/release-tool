@@ -5,6 +5,19 @@
       "version": {
         "major": 2,
         "minor": 1,
+        "patch": 1
+      },
+      "changes": [
+        {
+          "type": "Fix",
+          "description": "Better assembly version patching"
+        }
+      ]
+    },
+    {
+      "version": {
+        "major": 2,
+        "minor": 1,
         "patch": 0
       },
       "changes": [
@@ -91,6 +104,6 @@
   "currentVersion": {
     "major": 2,
     "minor": 1,
-    "patch": 0
+    "patch": 1
   }
 }

@@ -1,5 +1,9 @@
-# Release Tool 2.1.0
+# Release Tool 2.1.1
 
+
+## 2.1.1
+
+* **Fix**: Better assembly version patching
 
 ## 2.1.0
 
