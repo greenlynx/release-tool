@@ -4,6 +4,8 @@
 # - If no BREAKING changes are included, but there are one or more FEATUREs, a new minor version will be released
 # - Otherwise only the patch version of the release will be incremented
 #
+# Do not edit any other part of this file - it will be generated next release and your changes will be lost!
+#
 # Examples:
 #
 # FIX: Fixed widget rendering [JIRA-123]

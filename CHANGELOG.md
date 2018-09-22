@@ -1,5 +1,9 @@
-# Release Tool 1.2.1
+# Release Tool 2.0.0
 
+
+## 2.0.0
+
+* **Breaking change**: Use FIX instead of BUGFIX
 
 ## 1.2.1
 
