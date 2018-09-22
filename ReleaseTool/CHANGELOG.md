@@ -1,5 +1,9 @@
-# Release Tool 1.1.0
+# Release Tool 1.2.0
 
+
+## 1.2.0
+
+* **New feature**: Write VERSION file
 
 ## 1.1.0
 

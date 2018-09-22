@@ -58,10 +58,12 @@ namespace ReleaseTool
 
                 Log("Configuration:");
                 Log($" ReleaseHistoryFileName = {settings.ReleaseHistoryFileName}");
+                Log($" VersionFileName = {settings.VersionFileName}");
                 Log($" LatestChangesFileName = {settings.LatestChangesFileName}");
                 Log($" ChangeLogFileName = {settings.MarkdownChangeLogFileName}");
                 Log($" HtmlChangeLogFileName = {settings.HtmlChangeLogFileName}");
                 Log($" ProductName = {settings.ProductName}");
+                Log($" PatchAssemblyVersions = {settings.PatchAssemblyVersions}");
                 Log();
 
                 var releaseHistory = ReadReleaseHistory(settings);
@@ -97,6 +99,11 @@ namespace ReleaseTool
                 WriteReleaseHistory(settings, releaseHistory);
 
                 CreateBlankLatestChangesFile(settings);
+
+                if (!string.IsNullOrWhiteSpace(settings.VersionFileName))
+                {
+                    WriteVersionFile(settings, releaseHistory);
+                }
 
                 if (!string.IsNullOrWhiteSpace(settings.MarkdownChangeLogFileName))
                 {
@@ -238,6 +245,11 @@ namespace ReleaseTool
                 case VersionIncrementType.Major: return previousVersion.IncrementMajor();
                 default: throw new ArgumentException($"Unknown value for IncrementType: {incrementType}", nameof(incrementType));
             }
+        }
+
+        private static void WriteVersionFile(Settings settings, ReleaseHistory releaseHistory)
+        {
+            File.WriteAllText(settings.VersionFileName, releaseHistory.CurrentVersion.ToString());
         }
 
         private static void WriteReleaseHistory(Settings settings, ReleaseHistory releaseHistory)
