@@ -10,6 +10,6 @@
 
         public string ProductName { get; set; } = null;
 
-        public bool PatchAssemblyVersions = true;
+        public bool PatchAssemblyVersions { get; set; } = true;
     }
 }
