@@ -4,6 +4,7 @@
     {
         Major,
         Minor,
-        Patch
+        Patch,
+        None
     }
 }

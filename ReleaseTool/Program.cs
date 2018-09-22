@@ -90,7 +90,7 @@ namespace ReleaseTool
                 }
                 else
                 {
-                    Log($"No changes recorded since last release - the version will remain at {releaseHistory.CurrentVersion}");
+                    Log($"No changes recorded since last release - the version will remain at {releaseHistory.CurrentVersion}. The output files will be regenerated but no new release can be made without recording at least one change.");
                 }
                 
                 Console.WriteLine("Press ENTER to go ahead with the release, or CTRL-C to cancel...");
@@ -233,7 +233,8 @@ namespace ReleaseTool
         {
             if (changes.Any(x => x.Type == ChangeType.BreakingChange)) return VersionIncrementType.Major;
             if (changes.Any(x => x.Type == ChangeType.NewFeature)) return VersionIncrementType.Minor;
-            return VersionIncrementType.Patch;
+            if (changes.Any(x => x.Type == ChangeType.BugFix)) return VersionIncrementType.Patch;
+            return VersionIncrementType.None;
         }
 
         private static ProductVersion CalculateNewVersion(ProductVersion previousVersion, VersionIncrementType incrementType)
