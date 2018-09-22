@@ -1,5 +1,9 @@
-# Release Tool 1.2.0
+# Release Tool 1.2.1
 
+
+## 1.2.1
+
+* **Fix**: Make it clearer that a release needs a change recorded to go ahead
 
 ## 1.2.0
 

@@ -156,15 +156,17 @@ namespace ReleaseTool
         {
             Log($"Writing default skeleton file to {settings.LatestChangesFileName}");
 
-            const string defaultFileContents = @"# Every time you make a change, you should add a line to this file, along with a prefix to tag what sort of change it was (BUGFIX/FEATURE/BREAKING).
+            const string defaultFileContents = @"# Every time you make a change, you should add a line to this file, along with a prefix to tag what sort of change it was (FIX/FEATURE/BREAKING).
 # Each time a release is created, the changes will be moved from this file into the changelog. The type of changes included in a release determine what happens to its version number:
 # - If any BREAKING changes are included, a new major version will be released
 # - If no BREAKING changes are included, but there are one or more FEATUREs, a new minor version will be released
 # - Otherwise only the patch version of the release will be incremented
 #
+# Do not edit any other part of this file - it will be generated next release and your changes will be lost!
+#
 # Examples:
 #
-# BUGFIX: Fixed widget rendering [JIRA-123]
+# FIX: Fixed widget rendering [JIRA-123]
 # FEATURE: Added gadget info screen [JIRA-456]
 # BREAKING: Change API schema [JIRA-789]
 
@@ -204,8 +206,8 @@ namespace ReleaseTool
 
                 switch (changeTypeString)
                 {
-                    case "BUGFIX":
-                        changes.Add(new Change(ChangeType.BugFix, descriptionString));
+                    case "FIX":
+                        changes.Add(new Change(ChangeType.Fix, descriptionString));
                         break;
                     case "FEATURE":
                         changes.Add(new Change(ChangeType.NewFeature, descriptionString));
@@ -233,7 +235,7 @@ namespace ReleaseTool
         {
             if (changes.Any(x => x.Type == ChangeType.BreakingChange)) return VersionIncrementType.Major;
             if (changes.Any(x => x.Type == ChangeType.NewFeature)) return VersionIncrementType.Minor;
-            if (changes.Any(x => x.Type == ChangeType.BugFix)) return VersionIncrementType.Patch;
+            if (changes.Any(x => x.Type == ChangeType.Fix)) return VersionIncrementType.Patch;
             return VersionIncrementType.None;
         }
 

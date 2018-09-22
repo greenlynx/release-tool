@@ -13,7 +13,7 @@ namespace ReleaseTool.Domain
         [Description("New feature")]
         NewFeature,
 
-        [Description("Bug fix")]
-        BugFix
+        [Description("Fix")]
+        Fix
     }
 }
