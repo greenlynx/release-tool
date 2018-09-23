@@ -1,4 +1,4 @@
-#addin nuget:?package=GreenLynx.ReleaseTool.Cake
+#addin nuget:?package=GreenLynx.ReleaseTool.Cake&version=2.1.2
 #addin nuget:?package=Cake.Git
 #addin "Cake.FileHelpers"
 
