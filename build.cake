@@ -1,4 +1,4 @@
-#addin nuget:?package=GreenLynx.ReleaseTool.Cake&version=2.1.2
+#addin nuget:?package=GreenLynx.ReleaseTool.Cake&version=2.1.2&loaddependencies=true
 #addin nuget:?package=Cake.Git
 #addin "Cake.FileHelpers"
 
@@ -15,6 +15,12 @@ Task("Check-Git-Prerequisites")
     if (!GitIsValidRepository(gitPath))
 	{
 		throw new Exception($"Directory '{gitPath}' is not a valid git repository");
+	}
+
+	var currentBranch = GitBranchCurrent(gitPath);
+	if (currentBranch.FriendlyName != "master")
+	{
+		throw new Exception($"Directory '{gitPath}' must be on the master branch in order to prepare a release");
 	}
 
     if (GitHasStagedChanges(gitPath))
@@ -37,10 +43,17 @@ Task("Prepare-Release")
 	if (GitHasUncommitedChanges(gitPath))
 	{
 		var version = FileReadText("./VERSION");
-		GitTag(gitPath, version);
 		GitAddAll(gitPath);
 		GitCommit(gitPath, gitName, gitEmail, $"Prepare {version} release");
-		GitPush(gitPath);
+		GitTag(gitPath, version, gitName, gitEmail, "TODO: add changelog here");
+
+
+		Information("Release successfully created and tagged. Now run:");
+		Information("git push --follow-tags");
+	}
+	else
+	{
+		Warning("NOTE: No changes were listed, so no release will be made, no Git tag will be created, and nothing further will be done. If you are trying to create a new release, please add a change entry to LATEST-CHANGES.txt and try again.");
 	}
 });
 

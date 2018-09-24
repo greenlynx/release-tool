@@ -232,7 +232,7 @@ namespace ReleaseTool
         {
             Log($"Writing Markdown changelog to {settings.MarkdownChangeLogFileName}");
 
-            var format = $@"# {settings.ProductName} {{{{CurrentVersion}}}}{{{{#newline}}}}
+            var format = $@"# {{{{ProductName}}}} {{{{CurrentVersion}}}}{{{{#newline}}}}
 {{{{#newline}}}}
 {{{{#each Releases}}}}{{{{#newline}}}}
 ## {{{{Version}}}}{{{{#newline}}}}
