@@ -1,5 +1,9 @@
-# Release Tool 2.1.2
+# Release Tool 2.1.3
 
+
+## 2.1.3
+
+* **Fix**: Add missing Cake tag to NuGet package
 
 ## 2.1.2
 

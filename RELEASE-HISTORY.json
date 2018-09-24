@@ -5,6 +5,19 @@
       "version": {
         "major": 2,
         "minor": 1,
+        "patch": 3
+      },
+      "changes": [
+        {
+          "type": "Fix",
+          "description": "Add missing Cake tag to NuGet package"
+        }
+      ]
+    },
+    {
+      "version": {
+        "major": 2,
+        "minor": 1,
         "patch": 2
       },
       "changes": [
@@ -117,6 +130,6 @@
   "currentVersion": {
     "major": 2,
     "minor": 1,
-    "patch": 2
+    "patch": 3
   }
 }
