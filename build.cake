@@ -39,14 +39,19 @@ Task("Prepare-Release")
     .Does(() =>
 {
     PrepareRelease(new PrepareReleaseSettings { ProductName = "Release Tool", HtmlChangeLogFileName = "CHANGELOG.html" });
-
+	
 	if (GitHasUncommitedChanges(gitPath))
 	{
 		var version = FileReadText("./VERSION");
+
+		if (GitTags(gitPath).Exists(x => x.FriendlyName == version))
+		{
+			throw new Exception($"Tag '{version}' already exists, so no tag will be created. If you want a new release, please add a change entry to LATEST-CHANGES.txt and try again.");
+		}
+
 		GitAddAll(gitPath);
 		GitCommit(gitPath, gitName, gitEmail, $"Prepare {version} release");
 		GitTag(gitPath, version, gitName, gitEmail, "TODO: add changelog here");
-
 
 		Information("Release successfully created and tagged. Now run:");
 		Information("git push --follow-tags");
