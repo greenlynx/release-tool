@@ -1,5 +1,9 @@
-# Release Tool 2.1.3
+# Release Tool 2.1.4
 
+
+## 2.1.4
+
+* **Fix**: don't try to create the same git tag twice
 
 ## 2.1.3
 

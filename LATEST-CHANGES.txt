@@ -13,4 +13,3 @@
 # FEATURE: Added gadget info screen [JIRA-456]
 # BREAKING: Change API schema [JIRA-789]
 
-FIX: don't try to create the same git tag twice

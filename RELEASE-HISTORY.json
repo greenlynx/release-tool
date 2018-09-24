@@ -5,6 +5,19 @@
       "version": {
         "major": 2,
         "minor": 1,
+        "patch": 4
+      },
+      "changes": [
+        {
+          "type": "Fix",
+          "description": "don't try to create the same git tag twice"
+        }
+      ]
+    },
+    {
+      "version": {
+        "major": 2,
+        "minor": 1,
         "patch": 3
       },
       "changes": [
@@ -130,6 +143,6 @@
   "currentVersion": {
     "major": 2,
     "minor": 1,
-    "patch": 3
+    "patch": 4
   }
 }
