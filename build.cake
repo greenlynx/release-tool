@@ -38,7 +38,7 @@ Task("Prepare-Release")
 	.IsDependentOn("Check-Git-Prerequisites")
     .Does(() =>
 {
-    PrepareRelease(new PrepareReleaseSettings { ProductName = "Release Tool" });
+    PrepareRelease(new PrepareReleaseSettings { ProductName = "Release Tool", HtmlChangeLogFileName = "CHANGELOG.html" });
 
 	if (GitHasUncommitedChanges(gitPath))
 	{
