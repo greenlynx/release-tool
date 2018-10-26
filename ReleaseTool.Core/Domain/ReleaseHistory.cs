@@ -19,5 +19,6 @@ namespace ReleaseTool.Domain
         public static ReleaseHistory Default(string productName) => new ReleaseHistory(productName);
         public ReleaseHistory WithProductName(string productName) => new ReleaseHistory(productName, Releases);
         public ReleaseHistory WithNewRelease(Release release) => new ReleaseHistory(ProductName, Releases.Add(release));
+        public ReleaseHistory WithOnlyLatestRelease() => new ReleaseHistory(ProductName, Releases.Take(1));
     }
 }

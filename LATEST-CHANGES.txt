@@ -16,3 +16,6 @@
 BREAKING: Added a mandatory command parameter
 FEATURE: Added a command to initialise the directory
 FEATURE: Added a command to return the current version
+FEATURE: Added a command to return the next version
+FEATURE: Added a command to return the latest changelog
+FEATURE: Added a command to return the full changelog

@@ -26,17 +26,18 @@ namespace ReleaseTool.Core
 
             if (settings.Verbose)
             {
+                Log(string.Empty);
                 Log("Configuration:");
+                Log($" ChangeLogFileName = {settings.MarkdownChangeLogFileName}");
+                Log($" DoNotPrompt = {settings.DoNotPrompt}");
+                Log($" FirstVersion = {settings.FirstVersion}");
+                Log($" HtmlChangeLogFileName = {settings.HtmlChangeLogFileName}");
+                Log($" LatestChangesFileName = {settings.LatestChangesFileName}");
+                Log($" PatchAssemblyVersions = {settings.PatchAssemblyVersions}");
+                Log($" ProductName = {settings.ProductName}");
                 Log($" ReleaseHistoryFileName = {settings.ReleaseHistoryFileName}");
                 Log($" VersionFileName = {settings.VersionFileName}");
-                Log($" LatestChangesFileName = {settings.LatestChangesFileName}");
-                Log($" ChangeLogFileName = {settings.MarkdownChangeLogFileName}");
-                Log($" HtmlChangeLogFileName = {settings.HtmlChangeLogFileName}");
-                Log($" ProductName = {settings.ProductName}");
-                Log($" PatchAssemblyVersions = {settings.PatchAssemblyVersions}");
-                Log($" DoNotPrompt = {settings.DoNotPrompt}");
                 Log($" Verbose = {settings.Verbose}");
-                Log($" FirstVersion = {settings.FirstVersion}");
                 Log(string.Empty);
             }
 
@@ -61,7 +62,14 @@ namespace ReleaseTool.Core
                 case "nextversion":
                     new NextVersionCommand(Log).Execute(settings);
                     break;
-                default: throw new ErrorException($"Unknown command '{command}'");
+                case "changelog":
+                    new ChangelogCommand(Log).Execute(settings);
+                    break;
+                case "fullchangelog":
+                    new FullChangelogCommand(Log).Execute(settings);
+                    break;
+                default:
+                    throw new ErrorException($"Unknown command '{command}'");
             }
         }
     }

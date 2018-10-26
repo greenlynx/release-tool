@@ -31,6 +31,22 @@ namespace ReleaseTool.Cake
             return new NextVersionCommand(message => context.Log.Write(Verbosity.Normal, LogLevel.Information, message)).Execute(builtSettings);
         }
 
+        [CakeMethodAlias]
+        public static string GetChangelog(this ICakeContext context, ReleaseToolSettings settings = null)
+        {
+            var builtSettings = BuildSettings(settings);
+
+            return new ChangelogCommand(message => context.Log.Write(Verbosity.Normal, LogLevel.Information, message)).Execute(builtSettings);
+        }
+
+        [CakeMethodAlias]
+        public static string GetFullChangelog(this ICakeContext context, ReleaseToolSettings settings = null)
+        {
+            var builtSettings = BuildSettings(settings);
+
+            return new FullChangelogCommand(message => context.Log.Write(Verbosity.Normal, LogLevel.Information, message)).Execute(builtSettings);
+        }
+
         private static Settings BuildSettings(ReleaseToolSettings settings)
         {
             var builtSettings = new Settings();

@@ -161,10 +161,8 @@ namespace ReleaseTool
             File.WriteAllText(settings.ReleaseHistoryFileName, releaseHistoryJson);
         }
 
-        protected void WriteChangelog(Settings settings, ReleaseHistory releaseHistory)
+        protected string GenerateChangelog(Settings settings, ReleaseHistory releaseHistory)
         {
-            Log($"Writing Markdown changelog to {settings.MarkdownChangeLogFileName}");
-
             var format = $@"# {{{{ProductName}}}} {{{{CurrentVersion}}}}{{{{#newline}}}}
 {{{{#newline}}}}
 {{{{#each Releases}}}}{{{{#newline}}}}
@@ -176,7 +174,14 @@ namespace ReleaseTool
 
             var compiler = new FormatCompiler();
             var generator = compiler.Compile(format);
-            var changeLog = generator.Render(releaseHistory);
+            return generator.Render(releaseHistory);
+        }
+
+        protected void WriteChangelog(Settings settings, ReleaseHistory releaseHistory)
+        {
+            Log($"Writing Markdown changelog to {settings.MarkdownChangeLogFileName}");
+
+            var changeLog = GenerateChangelog(settings, releaseHistory);
 
             File.WriteAllText(settings.MarkdownChangeLogFileName, changeLog);
         }
