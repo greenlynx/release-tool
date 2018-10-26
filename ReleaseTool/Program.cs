@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System.Reflection;
-using ReleaseTool.Domain;
 using System;
 using System.Linq;
 using ReleaseTool.Core;
@@ -11,12 +9,12 @@ namespace ReleaseTool
 {
     public class Program
     {
-        private static void Log(string message = null)
+        private static void Log(object message = null)
         {
-            Console.WriteLine(message);
+            Console.WriteLine($"{message}");
         }
 
-        private static void LogError(string message)
+        private static void LogError(object message)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Log($"ERROR! {message}");
@@ -47,13 +45,11 @@ namespace ReleaseTool
             }
             catch (ErrorException ex)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(ex.Message);
+                LogError(ex.Message);
             }
             catch (Exception ex)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(ex);
+                LogError(ex);
             }
 
 #if DEBUG

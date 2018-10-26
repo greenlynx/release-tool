@@ -8,14 +8,30 @@ namespace ReleaseTool.Cake
     public static class CakeExtensions
     {
         [CakeMethodAlias]
-        public static ReleaseHistory PrepareRelease(this ICakeContext context, PrepareReleaseSettings settings = null)
+        public static ReleaseHistory PrepareRelease(this ICakeContext context, ReleaseToolSettings settings = null)
         {
             var builtSettings = BuildSettings(settings);
 
             return new PrepareCommand(message => context.Log.Write(Verbosity.Normal, LogLevel.Information, message)).Execute(builtSettings);
         }
 
-        private static Settings BuildSettings(PrepareReleaseSettings settings)
+        [CakeMethodAlias]
+        public static ProductVersion? GetThisReleaseVersion(this ICakeContext context, ReleaseToolSettings settings = null)
+        {
+            var builtSettings = BuildSettings(settings);
+
+            return new ThisVersionCommand(message => context.Log.Write(Verbosity.Normal, LogLevel.Information, message)).Execute(builtSettings);
+        }
+
+        [CakeMethodAlias]
+        public static ProductVersion? GetNextReleaseVersion(this ICakeContext context, ReleaseToolSettings settings = null)
+        {
+            var builtSettings = BuildSettings(settings);
+
+            return new NextVersionCommand(message => context.Log.Write(Verbosity.Normal, LogLevel.Information, message)).Execute(builtSettings);
+        }
+
+        private static Settings BuildSettings(ReleaseToolSettings settings)
         {
             var builtSettings = new Settings();
 

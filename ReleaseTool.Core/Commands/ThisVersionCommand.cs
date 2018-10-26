@@ -18,13 +18,13 @@ namespace ReleaseTool
     {
         public ThisVersionCommand(Action<string> log) : base(log) { }
 
-        public ReleaseHistory Execute(Settings settings)
+        public ProductVersion? Execute(Settings settings)
         {
             var releaseHistory = ReadReleaseHistory(settings);
 
             Log(releaseHistory.CurrentVersion.DisplayString());
 
-            return releaseHistory;
+            return releaseHistory.CurrentVersion;
         }
     }
 }

@@ -18,7 +18,7 @@ namespace ReleaseTool
     {
         public NextVersionCommand(Action<string> log) : base(log) { }
 
-        public ReleaseHistory Execute(Settings settings)
+        public ProductVersion? Execute(Settings settings)
         {
             var releaseHistory = ReadReleaseHistory(settings);
             var latestChanges = ReadLatestChanges(settings);
@@ -27,7 +27,7 @@ namespace ReleaseTool
 
             Log(newVersion.DisplayString());
 
-            return releaseHistory;
+            return newVersion;
         }
     }
 }

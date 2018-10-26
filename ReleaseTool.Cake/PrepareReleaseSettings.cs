@@ -1,6 +1,6 @@
 ﻿namespace ReleaseTool.Cake
 {
-    public class PrepareReleaseSettings
+    public class ReleaseToolSettings
     {
         public bool Verbose { get; set; } = true;
         public string ReleaseHistoryFileName { get; set; }

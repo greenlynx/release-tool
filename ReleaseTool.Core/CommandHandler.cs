@@ -15,7 +15,7 @@ namespace ReleaseTool.Core
             Log = log;
         }
 
-        public ReleaseHistory Handle(string command, Settings settings)
+        public void Handle(string command, Settings settings)
         {
             command = command?.ToLowerInvariant()?.Trim();
             if (settings.Verbose || command == "version")
@@ -36,7 +36,7 @@ namespace ReleaseTool.Core
                 Log($" PatchAssemblyVersions = {settings.PatchAssemblyVersions}");
                 Log($" DoNotPrompt = {settings.DoNotPrompt}");
                 Log($" Verbose = {settings.Verbose}");
-                Log($" Verbose = {settings.Verbose}");
+                Log($" FirstVersion = {settings.FirstVersion}");
                 Log(string.Empty);
             }
 
@@ -47,11 +47,20 @@ namespace ReleaseTool.Core
 
             switch (command)
             {
-                case "version": return null;
-                case "init": return new InitCommand(Log).Execute(settings);
-                case "prepare": return new PrepareCommand(Log).Execute(settings);
-                case "thisversion": return new ThisVersionCommand(Log).Execute(settings);
-                case "nextversion": return new NextVersionCommand(Log).Execute(settings);
+                case "version":
+                    break;
+                case "init":
+                    new InitCommand(Log).Execute(settings);
+                    break;
+                case "prepare":
+                    new PrepareCommand(Log).Execute(settings);
+                    break;
+                case "thisversion":
+                    new ThisVersionCommand(Log).Execute(settings);
+                    break;
+                case "nextversion":
+                    new NextVersionCommand(Log).Execute(settings);
+                    break;
                 default: throw new ErrorException($"Unknown command '{command}'");
             }
         }
