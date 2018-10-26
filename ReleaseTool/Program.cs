@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using System.Reflection;
 using ReleaseTool.Domain;
 using System;
+using System.Linq;
 
 namespace ReleaseTool
 {
@@ -43,7 +44,9 @@ namespace ReleaseTool
 
                 var settings = serviceProvider.GetRequiredService<IOptions<Settings>>().Value;
 
-                new ReleasePreparer(x => Log(x)).PrepareRelease(settings);
+                var command = args.Where(x => !x.StartsWith("-")).FirstOrDefault();
+
+                new ReleasePreparer(x => Log(x)).PrepareRelease(command, settings);
             }
             catch (ErrorException ex)
             {

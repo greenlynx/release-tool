@@ -13,3 +13,5 @@
 # FEATURE: Added gadget info screen [JIRA-456]
 # BREAKING: Change API schema [JIRA-789]
 
+BREAKING: Added a mandatory command parameter
+FEATURE: Added a command to initialise the directory

@@ -12,7 +12,7 @@ namespace ReleaseTool.Cake
         {
             var builtSettings = BuildSettings(settings);
 
-            return new ReleasePreparer(message => context.Log.Write(Verbosity.Normal, LogLevel.Information, message)).PrepareRelease(builtSettings);
+            return new ReleasePreparer(message => context.Log.Write(Verbosity.Normal, LogLevel.Information, message)).PrepareRelease("prepare", builtSettings);
         }
 
         private static Settings BuildSettings(PrepareReleaseSettings settings)

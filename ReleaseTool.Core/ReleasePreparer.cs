@@ -21,13 +21,18 @@ namespace ReleaseTool
             Log = log;
         }
 
-        public ReleaseHistory PrepareRelease(Settings settings)
+        public ReleaseHistory PrepareRelease(string command, Settings settings)
         {
+            if (string.IsNullOrWhiteSpace(command))
+            {
+                throw new ErrorException("No command was specified!");
+            }
+
             if (string.IsNullOrWhiteSpace(settings.ProductName))
             {
                 throw new ErrorException("No product name was specified! You must use the --ProductName=\"...\" command line switch to specify one");
             }
-
+                       
             Log("Configuration:");
             Log($" ReleaseHistoryFileName = {settings.ReleaseHistoryFileName}");
             Log($" VersionFileName = {settings.VersionFileName}");
@@ -41,63 +46,82 @@ namespace ReleaseTool
 
             var releaseHistory = ReadReleaseHistory(settings);
 
-            Log($"There are {releaseHistory.Releases.Count()} existing versions, and the latest one is {releaseHistory.CurrentVersion}");
-
-            var latestChanges = ReadLatestChanges(settings);
-            if (latestChanges.Any())
+            switch (command.ToLowerInvariant())
             {
-                Log("Found new changes:");
-                foreach (var change in latestChanges)
-                {
-                    Log($" - {change.TypeDescription} - {change.Description}");
-                }
-                Log(string.Empty);
+                case "init":
+                    Log("Initialising directory for automated releases...");
 
-                var versionIncrementType = CalculateVersionIncrementType(latestChanges);
+                    WriteReleaseHistory(settings, releaseHistory);
 
-                var newVersion = releaseHistory.Releases.Any() ? CalculateNewVersion(releaseHistory.CurrentVersion, versionIncrementType) : ProductVersion.Default;
+                    CreateBlankLatestChangesFile(settings, false);
 
-                Log($"New version will be {newVersion}");
+                    if (!string.IsNullOrWhiteSpace(settings.VersionFileName))
+                    {
+                        WriteVersionFile(settings, releaseHistory);
+                    }
 
-                releaseHistory = releaseHistory.WithNewRelease(new Release(newVersion, latestChanges));
+                    return releaseHistory;
+                case "prepare":
+                    Log($"There are {releaseHistory.Releases.Count()} existing versions, and the latest one is {releaseHistory.CurrentVersion}");
+
+                    var latestChanges = ReadLatestChanges(settings);
+                    if (latestChanges.Any())
+                    {
+                        Log("Found new changes:");
+                        foreach (var change in latestChanges)
+                        {
+                            Log($" - {change.TypeDescription} - {change.Description}");
+                        }
+                        Log(string.Empty);
+
+                        var versionIncrementType = CalculateVersionIncrementType(latestChanges);
+
+                        var newVersion = releaseHistory.Releases.Any() ? CalculateNewVersion(releaseHistory.CurrentVersion, versionIncrementType) : ProductVersion.Default;
+
+                        Log($"New version will be {newVersion}");
+
+                        releaseHistory = releaseHistory.WithNewRelease(new Release(newVersion, latestChanges));
+                    }
+                    else
+                    {
+                        Log($"No changes recorded since last release - the version will remain at {releaseHistory.CurrentVersion}. The output files will be regenerated but no new release can be made without recording at least one change.");
+                    }
+
+                    if (!settings.DoNotPrompt)
+                    {
+                        Console.WriteLine("Press ENTER to go ahead with the release, or CTRL-C to cancel...");
+                        Console.ReadLine();
+                    }
+
+                    WriteReleaseHistory(settings, releaseHistory);
+
+                    CreateBlankLatestChangesFile(settings);
+
+                    if (!string.IsNullOrWhiteSpace(settings.VersionFileName))
+                    {
+                        WriteVersionFile(settings, releaseHistory);
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(settings.MarkdownChangeLogFileName))
+                    {
+                        WriteChangelog(settings, releaseHistory);
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(settings.HtmlChangeLogFileName))
+                    {
+                        ConvertChangelogToHtml(settings, releaseHistory);
+                    }
+
+                    if (settings.PatchAssemblyVersions)
+                    {
+                        PatchAllDotNetProjectFiles(settings, releaseHistory.CurrentVersion);
+                        PatchAllAssemblyInfoFiles(settings, releaseHistory.CurrentVersion);
+                    }
+
+                    return releaseHistory;
+                default:
+                    throw new ErrorException($"Unknown command '{command}'");
             }
-            else
-            {
-                Log($"No changes recorded since last release - the version will remain at {releaseHistory.CurrentVersion}. The output files will be regenerated but no new release can be made without recording at least one change.");
-            }
-
-            if (!settings.DoNotPrompt)
-            {
-                Console.WriteLine("Press ENTER to go ahead with the release, or CTRL-C to cancel...");
-                Console.ReadLine();
-            }
-
-            WriteReleaseHistory(settings, releaseHistory);
-
-            CreateBlankLatestChangesFile(settings);
-
-            if (!string.IsNullOrWhiteSpace(settings.VersionFileName))
-            {
-                WriteVersionFile(settings, releaseHistory);
-            }
-
-            if (!string.IsNullOrWhiteSpace(settings.MarkdownChangeLogFileName))
-            {
-                WriteChangelog(settings, releaseHistory);
-            }
-
-            if (!string.IsNullOrWhiteSpace(settings.HtmlChangeLogFileName))
-            {
-                ConvertChangelogToHtml(settings, releaseHistory);
-            }
-
-            if (settings.PatchAssemblyVersions)
-            {
-                PatchAllDotNetProjectFiles(settings, releaseHistory.CurrentVersion);
-                PatchAllAssemblyInfoFiles(settings, releaseHistory.CurrentVersion);
-            }
-
-            return releaseHistory;
         }
 
         private ReleaseHistory ReadReleaseHistory(Settings settings)
@@ -109,10 +133,8 @@ namespace ReleaseTool
             return releaseHistory.WithProductName(settings.ProductName);
         }
 
-        private void CreateBlankLatestChangesFile(Settings settings)
+        private void CreateBlankLatestChangesFile(Settings settings, bool overwrite = true)
         {
-            Log($"Writing default skeleton file to {settings.LatestChangesFileName}");
-
             const string defaultFileContents = @"# Every time you make a change, you should add a line to this file, along with a prefix to tag what sort of change it was (FIX/FEATURE/BREAKING).
 # Each time a release is created, the changes will be moved from this file into the changelog. The type of changes included in a release determine what happens to its version number:
 # - If any BREAKING changes are included, a new major version will be released
@@ -120,7 +142,7 @@ namespace ReleaseTool
 # - If only FIXes have been made, only the patch version of the release will be incremented
 # - If no changes are listed here, a release cannot be made
 #
-# Do not edit any other part of this file - it will be generated next release and your changes will be lost!
+# Do not edit any other part of this file - it will be regenerated next release and your changes will be lost!
 #
 # Examples:
 #
@@ -130,6 +152,13 @@ namespace ReleaseTool
 
 ";
 
+            if (!overwrite && File.Exists(settings.LatestChangesFileName))
+            {
+                Log($"{settings.LatestChangesFileName} already exists, so not overwriting");
+                return;
+            }
+
+            Log($"Writing default skeleton file to {settings.LatestChangesFileName}");
             File.WriteAllText(settings.LatestChangesFileName, defaultFileContents, Encoding.UTF8);
         }
 
