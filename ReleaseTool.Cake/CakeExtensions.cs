@@ -29,6 +29,7 @@ namespace ReleaseTool.Cake
             if (settings.ProductName != null) builtSettings.ProductName = settings.ProductName;
             if (settings.PatchAssemblyVersions.HasValue) builtSettings.PatchAssemblyVersions = settings.PatchAssemblyVersions.Value;
 
+            builtSettings.Verbose = settings.Verbose;
             builtSettings.DoNotPrompt = settings.DoNotPrompt;
 
             return builtSettings;

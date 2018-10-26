@@ -9,6 +9,8 @@ using ReleaseTool.Domain;
 using System;
 using System.Xml.Linq;
 using System.Text.RegularExpressions;
+using System.Reflection;
+using ReleaseTool.Core;
 
 namespace ReleaseTool
 {
@@ -32,19 +34,33 @@ namespace ReleaseTool
             {
                 throw new ErrorException("No product name was specified! You must use the --ProductName=\"...\" command line switch to specify one");
             }
-                       
-            Log("Configuration:");
-            Log($" ReleaseHistoryFileName = {settings.ReleaseHistoryFileName}");
-            Log($" VersionFileName = {settings.VersionFileName}");
-            Log($" LatestChangesFileName = {settings.LatestChangesFileName}");
-            Log($" ChangeLogFileName = {settings.MarkdownChangeLogFileName}");
-            Log($" HtmlChangeLogFileName = {settings.HtmlChangeLogFileName}");
-            Log($" ProductName = {settings.ProductName}");
-            Log($" PatchAssemblyVersions = {settings.PatchAssemblyVersions}");
-            Log($" DoNotPrompt = {settings.DoNotPrompt}");
-            Log(string.Empty);
 
+            if (settings.Verbose)
+            {
+                Log("Configuration:");
+                Log($" ReleaseHistoryFileName = {settings.ReleaseHistoryFileName}");
+                Log($" VersionFileName = {settings.VersionFileName}");
+                Log($" LatestChangesFileName = {settings.LatestChangesFileName}");
+                Log($" ChangeLogFileName = {settings.MarkdownChangeLogFileName}");
+                Log($" HtmlChangeLogFileName = {settings.HtmlChangeLogFileName}");
+                Log($" ProductName = {settings.ProductName}");
+                Log($" PatchAssemblyVersions = {settings.PatchAssemblyVersions}");
+                Log($" DoNotPrompt = {settings.DoNotPrompt}");
+                Log(string.Empty);
+            }
+
+            switch (command.ToLowerInvariant())
+            {
+                case "version":
+                    var toolVersion = ProductVersion.FromSystemVersion(Assembly.GetCallingAssembly().GetName().Version);
+                    Log($"Release Tool {toolVersion}");
+                    return null;
+            }
+        
             var releaseHistory = ReadReleaseHistory(settings);
+            var latestChanges = ReadLatestChanges(settings);
+            var versionIncrementType = CalculateVersionIncrementType(latestChanges);
+            var newVersion = latestChanges.Any() ? CalculateNewVersion(releaseHistory.CurrentVersion, versionIncrementType, settings) : releaseHistory.CurrentVersion;
 
             switch (command.ToLowerInvariant())
             {
@@ -61,10 +77,15 @@ namespace ReleaseTool
                     }
 
                     return releaseHistory;
+                case "thisversion":
+                    Log(releaseHistory.CurrentVersion.DisplayString());
+                    return releaseHistory;
+                case "nextversion":
+                    Log(newVersion.DisplayString());
+                    return releaseHistory;
                 case "prepare":
-                    Log($"There are {releaseHistory.Releases.Count()} existing versions, and the latest one is {releaseHistory.CurrentVersion}");
+                    Log($"There are {releaseHistory.Releases.Count()} existing releases, and the latest version is {releaseHistory.CurrentVersion.DisplayString()}");
 
-                    var latestChanges = ReadLatestChanges(settings);
                     if (latestChanges.Any())
                     {
                         Log("Found new changes:");
@@ -74,13 +95,9 @@ namespace ReleaseTool
                         }
                         Log(string.Empty);
 
-                        var versionIncrementType = CalculateVersionIncrementType(latestChanges);
-
-                        var newVersion = releaseHistory.Releases.Any() ? CalculateNewVersion(releaseHistory.CurrentVersion, versionIncrementType) : ProductVersion.Default;
-
                         Log($"New version will be {newVersion}");
 
-                        releaseHistory = releaseHistory.WithNewRelease(new Release(newVersion, latestChanges));
+                        releaseHistory = releaseHistory.WithNewRelease(new Release(newVersion.Value, latestChanges));
                     }
                     else
                     {
@@ -114,8 +131,8 @@ namespace ReleaseTool
 
                     if (settings.PatchAssemblyVersions)
                     {
-                        PatchAllDotNetProjectFiles(settings, releaseHistory.CurrentVersion);
-                        PatchAllAssemblyInfoFiles(settings, releaseHistory.CurrentVersion);
+                        PatchAllDotNetProjectFiles(settings, releaseHistory.CurrentVersion.Value);
+                        PatchAllAssemblyInfoFiles(settings, releaseHistory.CurrentVersion.Value);
                     }
 
                     return releaseHistory;
@@ -226,20 +243,25 @@ namespace ReleaseTool
             return VersionIncrementType.None;
         }
 
-        private ProductVersion CalculateNewVersion(ProductVersion previousVersion, VersionIncrementType incrementType)
+        private ProductVersion CalculateNewVersion(ProductVersion? previousVersion, VersionIncrementType incrementType, Settings settings)
         {
+            if (previousVersion == null)
+            {
+                return new ProductVersion(settings.FirstVersion);
+            }
+        
             switch (incrementType)
             {
-                case VersionIncrementType.Patch: return previousVersion.IncrementPatch();
-                case VersionIncrementType.Minor: return previousVersion.IncrementMinor();
-                case VersionIncrementType.Major: return previousVersion.IncrementMajor();
+                case VersionIncrementType.Patch: return previousVersion.Value.IncrementPatch();
+                case VersionIncrementType.Minor: return previousVersion.Value.IncrementMinor();
+                case VersionIncrementType.Major: return previousVersion.Value.IncrementMajor();
                 default: throw new ArgumentException($"Unknown value for IncrementType: {incrementType}", nameof(incrementType));
             }
         }
 
         private void WriteVersionFile(Settings settings, ReleaseHistory releaseHistory)
         {
-            File.WriteAllText(settings.VersionFileName, releaseHistory.CurrentVersion.ToString());
+            File.WriteAllText(settings.VersionFileName, releaseHistory.CurrentVersion.HasValue ? releaseHistory.CurrentVersion.Value.ToString() : null);
         }
 
         private void WriteReleaseHistory(Settings settings, ReleaseHistory releaseHistory)

@@ -8,7 +8,7 @@ namespace ReleaseTool.Domain
     {
         public string ProductName { get; }
         public IImmutableList<Release> Releases { get; }
-        public ProductVersion CurrentVersion => Releases.FirstOrDefault()?.Version ?? ProductVersion.Default;
+        public ProductVersion? CurrentVersion => Releases.FirstOrDefault()?.Version;
 
         public ReleaseHistory(string productName, IEnumerable<Release> releases = null)
         {

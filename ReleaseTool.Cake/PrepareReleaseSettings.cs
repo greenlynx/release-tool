@@ -2,6 +2,7 @@
 {
     public class PrepareReleaseSettings
     {
+        public bool Verbose { get; set; } = true;
         public string ReleaseHistoryFileName { get; set; }
         public string VersionFileName { get; set; }
         public string LatestChangesFileName { get; set; }

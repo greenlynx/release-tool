@@ -26,10 +26,6 @@ namespace ReleaseTool
         {
             try
             {
-                var toolVersion = ProductVersion.FromSystemVersion(Assembly.GetExecutingAssembly().GetName().Version);
-                Log($"Release tool version {toolVersion}");
-                Log();
-
                 Console.CancelKeyPress += Console_CancelKeyPress;
 
                 var config = new ConfigurationBuilder()

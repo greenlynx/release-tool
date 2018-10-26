@@ -2,8 +2,8 @@
   "profiles": {
     "ReleaseTool": {
       "commandName": "Project",
-      "commandLineArgs": "--ProductName=\"Release Tool\" --HtmlChangeLogFileName=\"CHANGELOG.html\"",
-      "workingDirectory": "../"
+      "commandLineArgs": "--ProductName=\"Release Tool\" nextversion",
+      "workingDirectory": "C:\\Users\\Dan\\Documents\\Visual Studio 2017\\Projects\\ReleaseToolTest"
     }
   }
 }
