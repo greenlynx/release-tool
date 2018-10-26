@@ -14,134 +14,16 @@ using ReleaseTool.Core;
 
 namespace ReleaseTool
 {
-    public class ReleasePreparer
+    public abstract class CommandBase
     {
-        private readonly Action<string> Log;
+        protected Action<string> Log { get; }
 
-        public ReleasePreparer(Action<string> log)
+        protected CommandBase(Action<string> log)
         {
             Log = log;
         }
 
-        public ReleaseHistory PrepareRelease(string command, Settings settings)
-        {
-            if (string.IsNullOrWhiteSpace(command))
-            {
-                throw new ErrorException("No command was specified!");
-            }
-
-            if (string.IsNullOrWhiteSpace(settings.ProductName))
-            {
-                throw new ErrorException("No product name was specified! You must use the --ProductName=\"...\" command line switch to specify one");
-            }
-
-            if (settings.Verbose)
-            {
-                Log("Configuration:");
-                Log($" ReleaseHistoryFileName = {settings.ReleaseHistoryFileName}");
-                Log($" VersionFileName = {settings.VersionFileName}");
-                Log($" LatestChangesFileName = {settings.LatestChangesFileName}");
-                Log($" ChangeLogFileName = {settings.MarkdownChangeLogFileName}");
-                Log($" HtmlChangeLogFileName = {settings.HtmlChangeLogFileName}");
-                Log($" ProductName = {settings.ProductName}");
-                Log($" PatchAssemblyVersions = {settings.PatchAssemblyVersions}");
-                Log($" DoNotPrompt = {settings.DoNotPrompt}");
-                Log(string.Empty);
-            }
-
-            switch (command.ToLowerInvariant())
-            {
-                case "version":
-                    var toolVersion = ProductVersion.FromSystemVersion(Assembly.GetCallingAssembly().GetName().Version);
-                    Log($"Release Tool {toolVersion}");
-                    return null;
-            }
-        
-            var releaseHistory = ReadReleaseHistory(settings);
-            var latestChanges = ReadLatestChanges(settings);
-            var versionIncrementType = CalculateVersionIncrementType(latestChanges);
-            var newVersion = latestChanges.Any() ? CalculateNewVersion(releaseHistory.CurrentVersion, versionIncrementType, settings) : releaseHistory.CurrentVersion;
-
-            switch (command.ToLowerInvariant())
-            {
-                case "init":
-                    Log("Initialising directory for automated releases...");
-
-                    WriteReleaseHistory(settings, releaseHistory);
-
-                    CreateBlankLatestChangesFile(settings, false);
-
-                    if (!string.IsNullOrWhiteSpace(settings.VersionFileName))
-                    {
-                        WriteVersionFile(settings, releaseHistory);
-                    }
-
-                    return releaseHistory;
-                case "thisversion":
-                    Log(releaseHistory.CurrentVersion.DisplayString());
-                    return releaseHistory;
-                case "nextversion":
-                    Log(newVersion.DisplayString());
-                    return releaseHistory;
-                case "prepare":
-                    Log($"There are {releaseHistory.Releases.Count()} existing releases, and the latest version is {releaseHistory.CurrentVersion.DisplayString()}");
-
-                    if (latestChanges.Any())
-                    {
-                        Log("Found new changes:");
-                        foreach (var change in latestChanges)
-                        {
-                            Log($" - {change.TypeDescription} - {change.Description}");
-                        }
-                        Log(string.Empty);
-
-                        Log($"New version will be {newVersion}");
-
-                        releaseHistory = releaseHistory.WithNewRelease(new Release(newVersion.Value, latestChanges));
-                    }
-                    else
-                    {
-                        Log($"No changes recorded since last release - the version will remain at {releaseHistory.CurrentVersion}. The output files will be regenerated but no new release can be made without recording at least one change.");
-                    }
-
-                    if (!settings.DoNotPrompt)
-                    {
-                        Console.WriteLine("Press ENTER to go ahead with the release, or CTRL-C to cancel...");
-                        Console.ReadLine();
-                    }
-
-                    WriteReleaseHistory(settings, releaseHistory);
-
-                    CreateBlankLatestChangesFile(settings);
-
-                    if (!string.IsNullOrWhiteSpace(settings.VersionFileName))
-                    {
-                        WriteVersionFile(settings, releaseHistory);
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(settings.MarkdownChangeLogFileName))
-                    {
-                        WriteChangelog(settings, releaseHistory);
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(settings.HtmlChangeLogFileName))
-                    {
-                        ConvertChangelogToHtml(settings, releaseHistory);
-                    }
-
-                    if (settings.PatchAssemblyVersions)
-                    {
-                        PatchAllDotNetProjectFiles(settings, releaseHistory.CurrentVersion.Value);
-                        PatchAllAssemblyInfoFiles(settings, releaseHistory.CurrentVersion.Value);
-                    }
-
-                    return releaseHistory;
-                default:
-                    throw new ErrorException($"Unknown command '{command}'");
-            }
-        }
-
-        private ReleaseHistory ReadReleaseHistory(Settings settings)
+        protected ReleaseHistory ReadReleaseHistory(Settings settings)
         {
             if (!File.Exists(settings.ReleaseHistoryFileName)) return ReleaseHistory.Default(settings.ProductName);
 
@@ -150,7 +32,7 @@ namespace ReleaseTool
             return releaseHistory.WithProductName(settings.ProductName);
         }
 
-        private void CreateBlankLatestChangesFile(Settings settings, bool overwrite = true)
+        protected void CreateBlankLatestChangesFile(Settings settings, bool overwrite = true)
         {
             const string defaultFileContents = @"# Every time you make a change, you should add a line to this file, along with a prefix to tag what sort of change it was (FIX/FEATURE/BREAKING).
 # Each time a release is created, the changes will be moved from this file into the changelog. The type of changes included in a release determine what happens to its version number:
@@ -179,7 +61,7 @@ namespace ReleaseTool
             File.WriteAllText(settings.LatestChangesFileName, defaultFileContents, Encoding.UTF8);
         }
 
-        private IEnumerable<Change> ReadLatestChanges(Settings settings)
+        protected IEnumerable<Change> ReadLatestChanges(Settings settings)
         {
             if (!File.Exists(settings.LatestChangesFileName)) return Enumerable.Empty<Change>();
 
@@ -235,7 +117,7 @@ namespace ReleaseTool
             return changes;
         }
 
-        private VersionIncrementType CalculateVersionIncrementType(IEnumerable<Change> changes)
+        protected VersionIncrementType CalculateVersionIncrementType(IEnumerable<Change> changes)
         {
             if (changes.Any(x => x.Type == ChangeType.BreakingChange)) return VersionIncrementType.Major;
             if (changes.Any(x => x.Type == ChangeType.NewFeature)) return VersionIncrementType.Minor;
@@ -243,7 +125,7 @@ namespace ReleaseTool
             return VersionIncrementType.None;
         }
 
-        private ProductVersion CalculateNewVersion(ProductVersion? previousVersion, VersionIncrementType incrementType, Settings settings)
+        protected ProductVersion CalculateNewVersion(ProductVersion? previousVersion, VersionIncrementType incrementType, Settings settings)
         {
             if (previousVersion == null)
             {
@@ -259,12 +141,12 @@ namespace ReleaseTool
             }
         }
 
-        private void WriteVersionFile(Settings settings, ReleaseHistory releaseHistory)
+        protected void WriteVersionFile(Settings settings, ReleaseHistory releaseHistory)
         {
             File.WriteAllText(settings.VersionFileName, releaseHistory.CurrentVersion.HasValue ? releaseHistory.CurrentVersion.Value.ToString() : null);
         }
 
-        private void WriteReleaseHistory(Settings settings, ReleaseHistory releaseHistory)
+        protected void WriteReleaseHistory(Settings settings, ReleaseHistory releaseHistory)
         {
             Log($"Writing JSON release history to {settings.ReleaseHistoryFileName}");
 
@@ -279,7 +161,7 @@ namespace ReleaseTool
             File.WriteAllText(settings.ReleaseHistoryFileName, releaseHistoryJson);
         }
 
-        private void WriteChangelog(Settings settings, ReleaseHistory releaseHistory)
+        protected void WriteChangelog(Settings settings, ReleaseHistory releaseHistory)
         {
             Log($"Writing Markdown changelog to {settings.MarkdownChangeLogFileName}");
 
@@ -299,7 +181,7 @@ namespace ReleaseTool
             File.WriteAllText(settings.MarkdownChangeLogFileName, changeLog);
         }
 
-        private void ConvertChangelogToHtml(Settings settings, ReleaseHistory releaseHistory)
+        protected void ConvertChangelogToHtml(Settings settings, ReleaseHistory releaseHistory)
         {
             Log($"Writing HTML changelog to {settings.HtmlChangeLogFileName}");
 
@@ -329,7 +211,7 @@ namespace ReleaseTool
             File.WriteAllText(settings.HtmlChangeLogFileName, html);
         }
 
-        private void PatchAllDotNetProjectFiles(Settings settings, ProductVersion version)
+        protected void PatchAllDotNetProjectFiles(Settings settings, ProductVersion version)
         {
             Log("Patching assembly versions in .csproj files...");
 
@@ -367,7 +249,7 @@ namespace ReleaseTool
             }
         }
 
-        private void PatchAllAssemblyInfoFiles(Settings settings, ProductVersion version)
+        protected void PatchAllAssemblyInfoFiles(Settings settings, ProductVersion version)
         {
             Log("Patching assembly versions in AssemblyInfo.cs files...");
 

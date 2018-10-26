@@ -5,6 +5,7 @@ using System.Reflection;
 using ReleaseTool.Domain;
 using System;
 using System.Linq;
+using ReleaseTool.Core;
 
 namespace ReleaseTool
 {
@@ -42,7 +43,7 @@ namespace ReleaseTool
 
                 var command = args.Where(x => !x.StartsWith("-")).FirstOrDefault();
 
-                new ReleasePreparer(x => Log(x)).PrepareRelease(command, settings);
+                new CommandHandler(x => Log(x)).Handle(command, settings);
             }
             catch (ErrorException ex)
             {
