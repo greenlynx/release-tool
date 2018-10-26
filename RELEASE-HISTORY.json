@@ -3,6 +3,39 @@
   "releases": [
     {
       "version": {
+        "major": 3,
+        "minor": 0,
+        "patch": 0
+      },
+      "changes": [
+        {
+          "type": "BreakingChange",
+          "description": "Added a mandatory command parameter"
+        },
+        {
+          "type": "NewFeature",
+          "description": "Added a command to initialise the directory"
+        },
+        {
+          "type": "NewFeature",
+          "description": "Added a command to return the current version"
+        },
+        {
+          "type": "NewFeature",
+          "description": "Added a command to return the next version"
+        },
+        {
+          "type": "NewFeature",
+          "description": "Added a command to return the latest changelog"
+        },
+        {
+          "type": "NewFeature",
+          "description": "Added a command to return the full changelog"
+        }
+      ]
+    },
+    {
+      "version": {
         "major": 2,
         "minor": 1,
         "patch": 4
@@ -141,8 +174,8 @@
     }
   ],
   "currentVersion": {
-    "major": 2,
-    "minor": 1,
-    "patch": 4
+    "major": 3,
+    "minor": 0,
+    "patch": 0
   }
 }

@@ -1,5 +1,14 @@
-# Release Tool 2.1.4
+# Release Tool 3.0.0
 
+
+## 3.0.0
+
+* **Breaking change**: Added a mandatory command parameter
+* **New feature**: Added a command to initialise the directory
+* **New feature**: Added a command to return the current version
+* **New feature**: Added a command to return the next version
+* **New feature**: Added a command to return the latest changelog
+* **New feature**: Added a command to return the full changelog
 
 ## 2.1.4
 

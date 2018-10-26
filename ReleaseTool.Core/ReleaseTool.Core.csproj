@@ -2,10 +2,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>2.1.4</Version>
-    <AssemblyVersion>2.0.0</AssemblyVersion>
-    <FileVersion>2.1.4.0</FileVersion>
-    <InformationalVersion>2.1.4</InformationalVersion>
+    <Version>3.0.0</Version>
+    <AssemblyVersion>3.0.0</AssemblyVersion>
+    <FileVersion>3.0.0.0</FileVersion>
+    <InformationalVersion>3.0.0</InformationalVersion>
     <PackageId>GreenLynx.ReleaseTool.Core</PackageId>
     <Authors>Dan Haughey</Authors>
     <Company>Green Lynx Limited</Company>
