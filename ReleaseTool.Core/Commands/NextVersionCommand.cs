@@ -23,7 +23,7 @@ namespace ReleaseTool
             var releaseHistory = ReadReleaseHistory(settings);
             var latestChanges = ReadLatestChanges(settings);
             var versionIncrementType = CalculateVersionIncrementType(latestChanges);
-            var newVersion = latestChanges.Any() ? CalculateNewVersion(releaseHistory.CurrentVersion, versionIncrementType, settings) : releaseHistory.CurrentVersion;
+            var newVersion = CalculateNewVersion(releaseHistory.CurrentVersion, versionIncrementType, settings);
 
             Log(newVersion.DisplayString());
 

@@ -5,5 +5,6 @@ namespace ReleaseTool.Core
     public static class ProductVersionExtensions
     {
         public static string DisplayString(this ProductVersion? version) => version == null ? "(None)" : $"{version.Value.Major}.{version.Value.Minor}.{version.Value.Patch}";
+        public static string DisplayString(this ProductVersion version) => $"{version.Major}.{version.Minor}.{version.Patch}";
     }
 }

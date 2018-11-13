@@ -2,7 +2,7 @@
   "profiles": {
     "ReleaseTool": {
       "commandName": "Project",
-      "commandLineArgs": "--ProductName=\"Release Tool\" prepare",
+      "commandLineArgs": "--ProductName=\"Release Tool\" nextversion",
       "workingDirectory": "C:\\Users\\Dan\\Documents\\Visual Studio 2017\\Projects\\ReleaseTool"
     }
   }
