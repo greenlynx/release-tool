@@ -121,8 +121,7 @@ namespace ReleaseTool
         {
             if (changes.Any(x => x.Type == ChangeType.BreakingChange)) return VersionIncrementType.Major;
             if (changes.Any(x => x.Type == ChangeType.NewFeature)) return VersionIncrementType.Minor;
-            if (changes.Any(x => x.Type == ChangeType.Fix)) return VersionIncrementType.Patch;
-            return VersionIncrementType.None;
+            return VersionIncrementType.Patch;
         }
 
         protected ProductVersion CalculateNewVersion(ProductVersion? previousVersion, VersionIncrementType incrementType, Settings settings)
