@@ -4,6 +4,19 @@
     {
       "version": {
         "major": 3,
+        "minor": 1,
+        "patch": 0
+      },
+      "changes": [
+        {
+          "type": "NewFeature",
+          "description": "Always increment patch version at least"
+        }
+      ]
+    },
+    {
+      "version": {
+        "major": 3,
         "minor": 0,
         "patch": 0
       },
@@ -175,7 +188,7 @@
   ],
   "currentVersion": {
     "major": 3,
-    "minor": 0,
+    "minor": 1,
     "patch": 0
   }
 }

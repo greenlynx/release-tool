@@ -5,7 +5,7 @@
 # - If only FIXes have been made, only the patch version of the release will be incremented
 # - If no changes are listed here, a release cannot be made
 #
-# Do not edit any other part of this file - it will be generated next release and your changes will be lost!
+# Do not edit any other part of this file - it will be regenerated next release and your changes will be lost!
 #
 # Examples:
 #
@@ -13,4 +13,3 @@
 # FEATURE: Added gadget info screen [JIRA-456]
 # BREAKING: Change API schema [JIRA-789]
 
-FEATURE: Always increment patch version at least

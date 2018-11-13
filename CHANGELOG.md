@@ -1,5 +1,9 @@
-# Release Tool 3.0.0
+# Release Tool 3.1.0
 
+
+## 3.1.0
+
+* **New feature**: Always increment patch version at least
 
 ## 3.0.0
 
